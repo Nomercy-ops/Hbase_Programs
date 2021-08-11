@@ -41,10 +41,27 @@ def creating_table():
         logger.error(e)
         connection.close()
 
+def put_csv_data_into_hbase():
+    """
+    Description:
+        This function is used for putting csv data into hbase table
 
+    """
+    try:
+        connection = connect_to_hbase()
+        table = connection.table('wordcount')
+        input_file = csv.DictReader(open("wordcount_output"))
+        for row in input_file:
+            table.put(row['id'],
+        {'cf1:String': row['string'],
+         'cf2:Count': row['count']})       
+    except Exception as e: 
+        logger.error(e)
+        connection.close()
 
 
 creating_table()
+put_csv_data_into_hbase()
 
 
 
