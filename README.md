@@ -1,4 +1,7 @@
 # Hbase_Python_Programs
+* HappyBase 1.2.0
+* Release date: 2019-05-14
+
 
 # Importing CSV FILE INTO HBASE TABLE USING HAPPYBASE 
 
