@@ -77,8 +77,29 @@ def put_csv_data_into_hbase():
     except Exception as e:
         logger.error(e)
         connection.close()
+        
+def display_table_data():
+    """
+    Description:
+        This function is used for displaying data from hbase table.
+
+    """
+    try:
+        connection = connect_to_hbase()
+        table = connection.table('reliance_stock_data')
+        for key, data in table.scan():
+            id = key.decode('utf-8')
+            for value1, value2 in data.items():
+                cf1 = value1.decode('utf-8')
+                cf2 = value2.decode('utf-8')
+                print(id,cf1,cf2)
+
+    except Exception as e:
+        logger.error(e)
 
 creating_table()
+put_csv_data_into_hbase()
+display_table_data()
 
 
 
