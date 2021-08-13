@@ -47,10 +47,38 @@ def creating_table():
     except Exception as e:
         logger.error(e)
         connection.close()
+        
+def put_csv_data_into_hbase():
+    """
+    Description:
+        This function is used for putting csv data into hbase table
 
+    """
+    try:
+        connection = connect_to_hbase()
+        table = connection.table('reliance_stock_data')
+        demo = os.getenv("API_KEY")
+        CSV_URL = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&datatype=csv&symbol=RELIANCE.BSE&outputsize=compact&apikey={}'.format(
+            demo)
 
-
-
+        with requests.Session() as s:
+            download = s.get(CSV_URL)
+            decoded_content = download.content.decode('utf-8')
+            cr = csv.reader(decoded_content.splitlines(), delimiter=',')
+            next(cr)
+            my_list = list(cr)
+            for row in my_list:
+                table.put(row[0],
+                        {'cf1:Open': row[1],
+                         'cf2:High': row[2],
+                         'cf3:Low': row[3],
+                         'cf4:Close': row[4],
+                         'cf5:Volume': row[5]})
+    except Exception as e:
+        logger.error(e)
+        connection.close()
 
 creating_table()
+
+
 
